@@ -1,22 +1,23 @@
 package me.home.ibiza.eaAndeea;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class ExtendedEuclidesAlgorithm {
 
-	private int a;
+	private BigInteger a;
 	
-	private int b;
+	private BigInteger b;
 	
-	private List<Integer> resultTable;
+	private List<BigInteger> resultTable;
 	
-	private List<Integer> xRow;
-	private List<Integer> yRow;
+	private List<BigInteger> xRow;
+	private List<BigInteger> yRow;
 
 	
-	public ExtendedEuclidesAlgorithm(int a, int b) {
+	public ExtendedEuclidesAlgorithm(BigInteger a, BigInteger b) {
 		this.a = a;
 		this.b = b;
 		resultTable = new ArrayList<>();
@@ -25,10 +26,10 @@ public class ExtendedEuclidesAlgorithm {
 		
 	}
 	
-	public int doExtendedEuclidesAlgorithm() {
+	public BigInteger doExtendedEuclidesAlgorithm() {
 		initializaTable();
 		while(true) {
-			double remainder = calculateNextElement();
+			BigInteger remainder = calculateNextElement();
 			
 			if(hasToContinue(remainder)) {
 				break;
@@ -39,45 +40,45 @@ public class ExtendedEuclidesAlgorithm {
 	}
 	
 	private void printResultFormula() {
-		int lnko = resultTable.get(resultTable.size()-1);
-		double x = calculateXvalue();
-		double y = calculateYvalue();
+		BigInteger lnko = resultTable.get(resultTable.size()-1);
+		BigInteger x = calculateXvalue();
+		BigInteger y = calculateYvalue();
 		
 		if(isResultCorrect(lnko,x,y)) {
-			System.out.printf("%d = %d * %.0f + %d * %.0f\n",lnko,resultTable.get(0),x,resultTable.get(1),y);
+			System.out.printf("%d = %d * %d + %d * %d\n",lnko,resultTable.get(0),x,resultTable.get(1),y);
 		}else {
 			System.out.println("Something went wrong");
 		}
 	}
 
-	private boolean isResultCorrect(int lnko, double x, double y) {
-		return lnko == resultTable.get(0)*x + resultTable.get(1)*y;
+	private boolean isResultCorrect(BigInteger lnko, BigInteger x, BigInteger y) {
+		return lnko.compareTo(resultTable.get(0).multiply(x).add(resultTable.get(1).multiply(y))) == 0;
 	}
 
-	private double calculateXvalue() {
+	private BigInteger calculateXvalue() {
 		int lastIndex = resultTable.size()-1;
-		return Math.pow(-1, lastIndex)*xRow.get(lastIndex);
+		return xRow.get(lastIndex).multiply(BigInteger.valueOf((long) Math.pow(-1, lastIndex)));
 	}
 	
-	private double calculateYvalue() {
+	private BigInteger calculateYvalue() {
 		int lastIndex = resultTable.size()-1;
-		return Math.pow(-1, lastIndex+1)*yRow.get(lastIndex);
+		return yRow.get(lastIndex).multiply(BigInteger.valueOf((long) Math.pow(-1, lastIndex+1)));
 	}
 
-	private boolean hasToContinue(double remainder) {
-		return resultTable.get(resultTable.size()-1) == remainder;
+	private boolean hasToContinue(BigInteger remainder) {
+		return resultTable.get(resultTable.size()-1).compareTo(remainder) == 0;
 	}
 
-	private boolean checkRemainder(double remainder) {
-		return remainder == 0;
+	private boolean checkRemainder(BigInteger nextElement) {
+		return nextElement.compareTo(BigInteger.valueOf(0)) == 0;
 	}
 
-	private double calculateNextElement() {
+	private BigInteger calculateNextElement() {
 		int indexOfLastElement = resultTable.size()-1;
 		
-		int nextElement = resultTable.get(indexOfLastElement-1)%resultTable.get(indexOfLastElement);
+		BigInteger nextElement = resultTable.get(indexOfLastElement-1).remainder(resultTable.get(indexOfLastElement));
 		
-		calculateNextXandY((int) Math.floor(resultTable.get(indexOfLastElement-1)/resultTable.get(indexOfLastElement)));
+		calculateNextXandY(resultTable.get(indexOfLastElement-1).divide(resultTable.get(indexOfLastElement)));
 		
 		if(checkRemainder(nextElement)) {
 			return resultTable.get(indexOfLastElement);
@@ -85,20 +86,20 @@ public class ExtendedEuclidesAlgorithm {
 		
 		resultTable.add(nextElement);
 		
-		return 0;
+		return BigInteger.valueOf(0);
 	}
 	
-	private void calculateNextXandY(int divisor) {
+	private void calculateNextXandY(BigInteger divisor) {
 		int lastXElement = xRow.size()-1;
 		int lastYElement = yRow.size()-1;
 		
-		xRow.add(divisor*xRow.get(lastXElement)+xRow.get(lastXElement-1));
-		yRow.add(divisor*yRow.get(lastYElement)+yRow.get(lastYElement-1));
+		xRow.add(divisor.multiply(xRow.get(lastXElement)).add(xRow.get(lastXElement-1)));
+		yRow.add(divisor.multiply(yRow.get(lastYElement)).add(yRow.get(lastYElement-1)));
 
 	}
 
 	private void initializaTable() {
-		if(a > b) {
+		if(a.compareTo(b) == 1) {
 			resultTable.add(a);
 			resultTable.add(b);
 		}else {
@@ -106,7 +107,7 @@ public class ExtendedEuclidesAlgorithm {
 			resultTable.add(a);
 		}
 		
-		xRow.addAll(Arrays.asList(1,0));
-		yRow.addAll(Arrays.asList(0,1));
+		xRow.addAll(Arrays.asList(BigInteger.valueOf(1),BigInteger.valueOf(0)));
+		yRow.addAll(Arrays.asList(BigInteger.valueOf(0),BigInteger.valueOf(1)));
 	}
 }
