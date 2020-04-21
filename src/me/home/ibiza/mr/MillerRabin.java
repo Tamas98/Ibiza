@@ -39,7 +39,7 @@ public class MillerRabin {
 			boolean isPrime = false;
 			this.a = generateRandomA();
 			System.out.println(a + "\t" + doTestWithoutPowers() + "\t" + doTestWithPowers());
-			isPrime = isPrime || doTestWithoutPowers() || doTestWithPowers();
+			isPrime = isPrime || doTestWithoutPowers() | doTestWithPowers();
 			result = result && isPrime;
 			runnedTestCases++;
 		}
@@ -73,9 +73,17 @@ public class MillerRabin {
 		
 		boolean isPrime = false;
 		
-		for(BigInteger power : r) {
-			BigInteger nextMod = a.modPow(d.multiply(BigInteger.TWO.pow(power.intValue())), n);
-			isPrime = isPrime || nextMod.equals(BigInteger.ONE.negate());
+		if(r.size() == 1) {
+			
+			return a.modPow(d.multiply(BigInteger.TWO.pow(r.get(0).intValue())), n).equals(n.subtract(BigInteger.ONE));
+		
+		}else {
+		
+			for(BigInteger power : r) {
+				BigInteger nextMod = a.modPow(d.multiply(BigInteger.TWO.pow(power.intValue())), n);
+				isPrime = isPrime || nextMod.equals(BigInteger.ONE.negate()) || nextMod.equals(n.subtract(BigInteger.ONE));
+			}
+		
 		}
 		
 		return isPrime;

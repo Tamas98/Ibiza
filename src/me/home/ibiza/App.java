@@ -18,8 +18,11 @@ public class App {
 		System.out.printf("%d on the power of %d mod %d = %d\n",5,117,19,fme.doFastModularExponentation());
 		
 		System.out.println("Miller-Rabin test:");
-		MillerRabin mr = new MillerRabin(BigInteger.valueOf(127),3);
-		System.out.println("127 is probably prime: " + mr.doMRtest() + "! tested 3 times");
+		MillerRabin mr = new MillerRabin(BigInteger.valueOf(15),3);
+		System.out.println("15 is probably prime: " + mr.doMRtest() + "! tested 3 times");
+
+		MillerRabin mr2 = new MillerRabin(BigInteger.valueOf(17),5);
+		System.out.println("17 is probably prime: " + mr2.doMRtest() + "! tested 5 times");
 
 	}
 
