@@ -3,7 +3,9 @@ package me.home.ibiza.eaAndeea;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ExtendedEuclidesAlgorithm {
 
@@ -26,7 +28,7 @@ public class ExtendedEuclidesAlgorithm {
 		
 	}
 	
-	public BigInteger doExtendedEuclidesAlgorithm() {
+	public Map<String, BigInteger> doExtendedEuclidesAlgorithm() {
 		initializaTable();
 		while(true) {
 			BigInteger remainder = calculateNextElement();
@@ -35,11 +37,15 @@ public class ExtendedEuclidesAlgorithm {
 				break;
 			}
 		}
-		printResultFormula();
-		return resultTable.get(resultTable.size()-1);
+		//printResultFormula();
+		Map<String,BigInteger> resultMap = new HashMap<>();
+		resultMap.put("lnko", resultTable.get(resultTable.size()-1));
+		resultMap.put("d", calculateYvalue());
+
+		return resultMap;
 	}
 	
-	private void printResultFormula() {
+	/*private void printResultFormula() {
 		BigInteger lnko = resultTable.get(resultTable.size()-1);
 		BigInteger x = calculateXvalue();
 		BigInteger y = calculateYvalue();
@@ -49,14 +55,14 @@ public class ExtendedEuclidesAlgorithm {
 		}else {
 			System.out.println("Something went wrong");
 		}
-	}
+	}*/
 
 	private boolean isResultCorrect(BigInteger lnko, BigInteger x, BigInteger y) {
 		return lnko.compareTo(resultTable.get(0).multiply(x).add(resultTable.get(1).multiply(y))) == 0;
 	}
 
 	private BigInteger calculateXvalue() {
-		int lastIndex = resultTable.size()-1;
+		int lastIndex = resultTable.size();	
 		return xRow.get(lastIndex).multiply(BigInteger.valueOf((long) Math.pow(-1, lastIndex)));
 	}
 	

@@ -2,7 +2,9 @@ package me.home.ibiza.mr;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class MillerRabin {
@@ -21,9 +23,11 @@ public class MillerRabin {
 	
 	private List<BigInteger> alreadyTestedWith;
 	
+	private boolean shouldNotTest = false;
+	
 	public MillerRabin(BigInteger n,int testTimes) {
 		if(n.remainder(BigInteger.TWO).compareTo(BigInteger.ZERO) == 0) {
-			throw new IllegalArgumentException("n cannot be odd");
+			this.shouldNotTest = true;
 		}
 		this.n = n;
 		this.testTime = testTimes;
@@ -33,12 +37,14 @@ public class MillerRabin {
 	}
 	
 	public boolean doMRtest() {
+		if(shouldNotTest) {
+			return false;
+		}
 		boolean result = true;
 		int runnedTestCases = 0;
 		while(runnedTestCases < testTime) {
 			boolean isPrime = false;
 			this.a = generateRandomA();
-			System.out.println(a + "\t" + doTestWithoutPowers() + "\t" + doTestWithPowers());
 			isPrime = isPrime || doTestWithoutPowers() | doTestWithPowers();
 			result = result && isPrime;
 			runnedTestCases++;
@@ -57,7 +63,7 @@ public class MillerRabin {
        
         if (result.compareTo(min) < 0)
             result = result.add(min);
-          if (result.compareTo(n) >= 0)
+        if (result.compareTo(n) >= 0)
             result = result.mod(center).add(min);
         
         

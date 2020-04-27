@@ -29,11 +29,19 @@ public class FastModularExponentation {
 	}
 
 	private BigInteger fastModularWhenBisNotPowerOfTwo(BigInteger firstMod) {
-		List<BigInteger> listOfTwoPowers = generateListOfTwoPowersFromB();
+		List<BigInteger> listOfTwoPowers = generateListOfTwoPowersFromB();	
 		BigInteger nextMod = (firstMod.multiply(firstMod)).mod(c);
-		List<BigInteger> resultList = new ArrayList<>(Arrays.asList(firstMod));
+		List<BigInteger> resultList = new ArrayList<>();
 		
-		for(int i = 4; i <= b.intValue(); i = i*2) {
+		if(listOfTwoPowers.contains(BigInteger.ONE)) {
+			resultList.add(firstMod);
+		}
+		
+		if(listOfTwoPowers.contains(BigInteger.TWO)) {
+			resultList.add(nextMod);
+		}
+			
+		for(long i = 4; i <= b.intValue(); i = i*2) {
 			nextMod = (nextMod.multiply(nextMod)).mod(c);
 			if(listOfTwoPowers.contains(BigInteger.valueOf(i))){
 				resultList.add(nextMod);
@@ -45,7 +53,7 @@ public class FastModularExponentation {
 
 	private BigInteger fastModularWhenBisPowerOfTwo(BigInteger firstMod) {
 		BigInteger nextMod = (firstMod.multiply(firstMod)).mod(c);
-		for(int i = 2; i <= b.intValue(); i = i*2) {
+		for(int i = 4; i <= b.intValue(); i = i*2) {
 			nextMod = (nextMod.multiply(nextMod)).mod(c);
 		}
 		return (nextMod.multiply(nextMod)).mod(c);
@@ -63,25 +71,32 @@ public class FastModularExponentation {
 
 	private List<BigInteger> generateListOfTwoPowersFromB() {
 		BigInteger cpyB = b;
+		String binary = cpyB.toString(2);
+		String[] chars = binary.split("");
 		List<BigInteger> result = new ArrayList<>();
+				
+		for(int i = 0;i < chars.length;i++) {
+			if(chars[chars.length-1-i].equals("1")) {
+				result.add(BigInteger.valueOf((long)Math.pow(2, i)));
+			}
+		}
+		/*
 		int i = 0;
 		while(cpyB.compareTo(BigInteger.ONE) != 0) {
 			if(cpyB.remainder(BigInteger.TWO).compareTo(BigInteger.ONE) == 0) {
-				result.add(BigInteger.valueOf((long)Math.pow(2, i)));
-				cpyB = cpyB.subtract(BigInteger.ONE).divide(BigInteger.TWO);
-				i++;
+				break;
 			}else {
+				result.add(BigInteger.valueOf((long)Math.pow(2, i)));
 				cpyB = cpyB.divide(BigInteger.TWO);
 				i++;
 			}
-		}
-		result.add(BigInteger.valueOf((long)Math.pow(2, i)));
+		}*/
+
 		return result;
 	}
 
 	private boolean BisPowerOfTwo() {
-		double squareRoot = Math.sqrt(b.doubleValue());
-		return Math.floor(squareRoot) == squareRoot;
+		return b.mod(BigInteger.TWO).equals(BigInteger.ZERO);
 	}
 	
 }
